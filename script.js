@@ -9,6 +9,33 @@ Promise.all([
   console.error('Error loading models:', error);
 });
 
+// Emotion emoji mapping
+const emotionEmojis = {
+  happy: '😊',
+  sad: '😢',
+  angry: '😠',
+  surprised: '😮',
+  neutral: '😐',
+  fearful: '😨',
+  disgusted: '🤢'
+};
+
+// Show toast message
+function showToast(message) {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerText = message;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000); // Remove toast after 3 seconds
+}
+
+// Update emotion display
+function updateEmotionDisplay(emotion) {
+  const emotionDisplay = document.getElementById('emotion-display');
+  emotionDisplay.innerText = emotionEmojis[emotion] || '😐';
+  emotionDisplay.classList.remove('hidden');
+}
+
 // Start video stream
 function startVideo() {
   navigator.mediaDevices.getUserMedia({ video: true })
@@ -35,9 +62,10 @@ function detectEmotions(video) {
       const emotions = detections[0].expressions;
       const dominantEmotion = Object.keys(emotions).reduce((a, b) => emotions[a] > emotions[b] ? a : b);
       console.log('Detected Emotion:', dominantEmotion);
-      document.getElementById('chat-window').innerText = `Detected Emotion: ${dominantEmotion}`;
+      updateEmotionDisplay(dominantEmotion); // Update emotion display
+      showToast(`Detected Emotion: ${dominantEmotion}`); // Show emotion as toast
     }
-  }, 1000);
+  }, 3000); // Update every 3 seconds
 }
 
 // Simple Rule-Based Chatbot
@@ -52,7 +80,9 @@ function chatWithBot(message, emotion) {
     disgusted: "Yuck! What’s causing that reaction?"
   };
 
-  return responses[emotion] || "I’m here to listen. How can I help you?";
+  const botResponse = responses[emotion] || "I’m here to listen. How can I help you?";
+  showToast(`Bot: ${botResponse}`); // Show bot response as toast
+  return botResponse;
 }
 
 // Handle Start Button Click
