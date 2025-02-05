@@ -3,17 +3,26 @@ Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
   faceapi.nets.faceExpressionNet.loadFromUri('/models')
-]).then(startVideo);
+]).then(() => {
+  console.log('Models loaded successfully!');
+  startVideo();
+}).catch(error => {
+  console.error('Error loading models:', error);
+});
 
 // Start video stream
 function startVideo() {
   navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
+      console.log('Camera access granted!');
       const video = document.createElement('video');
       document.body.append(video);
       video.srcObject = stream;
       video.play();
       detectEmotions(video);
+    })
+    .catch(error => {
+      console.error('Error accessing camera:', error);
     });
 }
 
@@ -27,7 +36,6 @@ function detectEmotions(video) {
       const emotions = detections[0].expressions;
       const dominantEmotion = Object.keys(emotions).reduce((a, b) => emotions[a] > emotions[b] ? a : b);
       console.log('Detected Emotion:', dominantEmotion);
-      // Use this emotion to guide the bot's responses
       document.getElementById('chat-window').innerText = `Detected Emotion: ${dominantEmotion}`;
     }
   }, 1000);
@@ -50,6 +58,7 @@ function chatWithBot(message, emotion) {
 
 // Handle Start Button Click
 document.getElementById('start-btn').addEventListener('click', () => {
+  console.log('Start button clicked!');
   const character = document.getElementById('character').value;
   const customDescription = document.getElementById('custom-description').value;
   document.getElementById('chat').classList.remove('hidden');
