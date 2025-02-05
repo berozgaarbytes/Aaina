@@ -5,7 +5,6 @@ Promise.all([
   faceapi.nets.faceExpressionNet.loadFromUri('/models')
 ]).then(() => {
   console.log('Models loaded successfully!');
-  startVideo();
 }).catch(error => {
   console.error('Error loading models:', error);
 });
@@ -15,10 +14,10 @@ function startVideo() {
   navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
       console.log('Camera access granted!');
-      const video = document.createElement('video');
-      document.body.append(video);
+      const video = document.getElementById('video');
       video.srcObject = stream;
       video.play();
+      video.classList.remove('hidden'); // Show the video element
       detectEmotions(video);
     })
     .catch(error => {
@@ -63,6 +62,7 @@ document.getElementById('start-btn').addEventListener('click', () => {
   const customDescription = document.getElementById('custom-description').value;
   document.getElementById('chat').classList.remove('hidden');
   document.getElementById('chat-window').innerText = "Bot: Hi there! How can I help you today?";
+  startVideo(); // Start the camera when the button is clicked
 });
 
 // Handle User Input
