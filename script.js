@@ -22,10 +22,11 @@ const emotionEmojis = {
 
 // Show toast message
 function showToast(message) {
+  const toastContainer = document.getElementById('toast-container');
   const toast = document.createElement('div');
   toast.className = 'toast';
   toast.innerText = message;
-  document.body.appendChild(toast);
+  toastContainer.appendChild(toast);
   setTimeout(() => toast.remove(), 3000); // Remove toast after 3 seconds
 }
 
