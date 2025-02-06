@@ -3,56 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emotion Bot</title>
+  <title>Aaina • Mirror of Emotions</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
+    /* Dark Academia Theme */
+    body {
+      background: #1a1a1a;
+      color: #e5e5e5;
+    }
+
     .toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #d4af37; /* Gold accent */
+      padding: 12px 24px;
+      border-radius: 8px;
       z-index: 1000;
+      font-family: 'Times New Roman', serif;
       animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 1; }
-      to { opacity: 0; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
     .emotion-display {
       position: fixed;
       top: 20px;
-      right: 20px;
-      background: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 5px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #d4af37;
+      padding: 12px 24px;
+      border-radius: 8px;
       z-index: 1000;
       font-size: 1.5rem;
+      font-family: 'Times New Roman', serif;
     }
 
-    .video-container {
+    .logo {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+    }
+
+    .camera-feed {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
-    }
-
-    .video-container video {
-      width: 100%;
-      height: 100%;
       object-fit: cover;
+      z-index: 0;
     }
 
     .overlay {
@@ -61,37 +67,27 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 2;
-      pointer-events: none; /* Allow clicks to pass through */
+      z-index: 1;
+      pointer-events: none;
     }
   </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-lg w-96 text-center z-10">
-    <h1 class="text-2xl font-bold mb-4">Emotion Bot</h1>
-    <p class="mb-4">Select a character or create your own:</p>
-    <select id="character" class="w-full p-2 border rounded mb-4">
-      <option value="friend">Friend</option>
-      <option value="spouse">Spouse</option>
-      <option value="parent">Parent</option>
-      <option value="custom">Custom</option>
-    </select>
-    <div id="custom-input" class="hidden mb-4">
-      <textarea id="custom-description" class="w-full p-2 border rounded" placeholder="Describe your custom character..."></textarea>
-    </div>
-    <button id="start-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Start</button>
-    <div id="chat" class="mt-4 hidden">
-      <div id="chat-window" class="h-48 overflow-y-auto border p-2 mb-4"></div>
-      <input id="user-input" class="w-full p-2 border rounded" placeholder="Type your message...">
-    </div>
+<body>
+  <!-- Logo -->
+  <div class="logo">
+    <i class="fas fa-mirror mr-2"></i>Aaina
   </div>
-  <div class="video-container">
-    <video id="video" autoplay class="hidden"></video>
-  </div>
+
+  <!-- Camera Feed -->
+  <video id="camera-feed" class="camera-feed hidden"></video>
+
+  <!-- Emotion & Toast Overlays -->
   <div class="overlay">
     <div id="emotion-display" class="emotion-display hidden">😐</div>
     <div id="toast-container"></div>
   </div>
+
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
   <script src="script.js"></script>
 </body>
