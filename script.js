@@ -3,7 +3,9 @@ Promise.all([
   faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
   faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
   faceapi.nets.faceExpressionNet.loadFromUri('/models')
-]).then(startApp).catch(console.error);
+]).then(() => {
+  console.log('Models loaded successfully!');
+}).catch(console.error);
 
 // Emotion Emojis (Dark Academia Style)
 const emotionEmojis = {
@@ -64,3 +66,9 @@ function showToast(message) {
   document.getElementById('toast-container').appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
+
+// Handle Start Button Click
+document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('start-screen').classList.add('hidden');
+  startApp();
+});
