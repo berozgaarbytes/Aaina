@@ -3,28 +3,143 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emotion Bot</title>
+  <title>Aaina • Mirror of Emotions</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <style>
+    /* Dark Academia Theme */
+    body {
+      background: #1a1a1a;
+      color: #e5e5e5;
+      font-family: 'Times New Roman', serif;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #d4af37; /* Gold accent */
+      padding: 12px 24px;
+      border-radius: 8px;
+      z-index: 1000;
+      animation: fadeIn 0.5s, fadeOut 0.5s 2.5s;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+
+    .emotion-display {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #d4af37;
+      padding: 12px 24px;
+      border-radius: 8px;
+      z-index: 1000;
+      font-size: 1.5rem;
+    }
+
+    .logo {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 1.8rem;
+      color: #d4af37;
+    }
+
+    .camera-feed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .start-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2;
+    }
+
+    .start-screen h1 {
+      font-size: 3rem;
+      color: #d4af37;
+      margin-bottom: 20px;
+    }
+
+    .start-screen button {
+      background: #d4af37;
+      color: #1a1a1a;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .about-section {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #d4af37;
+      padding: 12px 24px;
+      border-radius: 8px;
+      z-index: 1000;
+      font-size: 1rem;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
-    <h1 class="text-2xl font-bold mb-4">Emotion Bot</h1>
-    <p class="mb-4">Select a character or create your own:</p>
-    <select id="character" class="w-full p-2 border rounded mb-4">
-      <option value="friend">Friend</option>
-      <option value="spouse">Spouse</option>
-      <option value="parent">Parent</option>
-      <option value="custom">Custom</option>
-    </select>
-    <div id="custom-input" class="hidden mb-4">
-      <textarea id="custom-description" class="w-full p-2 border rounded" placeholder="Describe your custom character..."></textarea>
-    </div>
-    <button id="start-btn" class="bg-blue-500 text-white px-4 py-2 rounded">Start</button>
-    <div id="chat" class="mt-4 hidden">
-      <div id="chat-window" class="h-48 overflow-y-auto border p-2 mb-4"></div>
-      <input id="user-input" class="w-full p-2 border rounded" placeholder="Type your message...">
-    </div>
+<body>
+  <!-- Logo -->
+  <div class="logo">
+    <i class="fas fa-mirror mr-2"></i>Aaina
   </div>
+
+  <!-- Start Screen -->
+  <div id="start-screen" class="start-screen">
+    <h1>Aaina</h1>
+    <button id="start-btn">Start</button>
+  </div>
+
+  <!-- About Section -->
+  <div class="about-section">
+    <p>Aaina: Your Mirror of Emotions. Reflect, Understand, Connect.</p>
+  </div>
+
+  <!-- Camera Feed -->
+  <video id="camera-feed" class="camera-feed hidden"></video>
+
+  <!-- Emotion & Toast Overlays -->
+  <div class="overlay">
+    <div id="emotion-display" class="emotion-display hidden">😐</div>
+    <div id="toast-container"></div>
+  </div>
+
+  <!-- Scripts -->
   <script src="script.js"></script>
 </body>
 </html>
