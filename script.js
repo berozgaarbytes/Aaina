@@ -1,13 +1,6 @@
-// Load Face-API.js models
-Promise.all([
-  faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-  faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-  faceapi.nets.faceExpressionNet.loadFromUri('/models')
-]).then(() => {
-  console.log('Models loaded successfully!');
-}).catch(console.error);
+import * as faceLandmarksDetection from '@tensorflow-models/face-landmarks-detection';
+import '@tensorflow/tfjs';
 
-// Emotion Emojis (Dark Academia Style)
 const emotionEmojis = {
   happy: '🌿',    // Laurel (joy)
   sad: '🕯️',     // Candle (sorrow)
@@ -18,47 +11,52 @@ const emotionEmojis = {
   disgusted: '☠️' // Skull (disgust)
 };
 
-// Start Camera & Detection
-function startApp() {
-  navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => {
-      const video = document.getElementById('camera-feed');
-      video.srcObject = stream;
-      video.play();
-      video.classList.remove('hidden');
-      detectEmotions(video);
-    })
-    .catch(console.error);
+async function loadModel() {
+  return await faceLandmarksDetection.load(
+    faceLandmarksDetection.SupportedPackages.mediapipeFacemesh
+  );
 }
 
-// Detect Emotions Every 3 Seconds
-function detectEmotions(video) {
-  setInterval(async () => {
-    const detections = await faceapi.detectAllFaces(video, 
-      new faceapi.TinyFaceDetectorOptions()
-    ).withFaceExpressions();
+async function startApp() {
+  const video = document.getElementById('camera-feed');
+  
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    video.play();
+    video.classList.remove('hidden');
 
-    if (detections.length > 0) {
-      const emotions = detections[0].expressions;
-      const dominantEmotion = Object.keys(emotions).reduce((a, b) => 
-        emotions[a] > emotions[b] ? a : b
-      );
-      
-      // Update UI
-      updateEmotionDisplay(dominantEmotion);
-      showToast(`Current Mood: ${dominantEmotion}`);
+    const model = await loadModel();
+    detectEmotions(video, model);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+async function detectEmotions(video, model) {
+  setInterval(async () => {
+    const predictions = await model.estimateFaces({ input: video });
+    
+    if (predictions.length > 0) {
+      const emotion = getDominantEmotion(predictions[0]);
+      updateEmotionDisplay(emotion);
+      showToast(`Current Mood: ${emotion}`);
     }
   }, 3000);
 }
 
-// Update Emotion Display
+function getDominantEmotion(faceData) {
+  // Placeholder function - Replace with a real emotion classification model
+  const emotions = ['happy', 'sad', 'angry', 'surprised', 'neutral', 'fearful', 'disgusted'];
+  return emotions[Math.floor(Math.random() * emotions.length)];
+}
+
 function updateEmotionDisplay(emotion) {
   const display = document.getElementById('emotion-display');
   display.innerHTML = `${emotionEmojis[emotion]} ${emotion}`;
   display.classList.remove('hidden');
 }
 
-// Show Toast Message
 function showToast(message) {
   const toast = document.createElement('div');
   toast.className = 'toast';
@@ -67,7 +65,6 @@ function showToast(message) {
   setTimeout(() => toast.remove(), 3000);
 }
 
-// Handle Start Button Click
 document.getElementById('start-btn').addEventListener('click', () => {
   document.getElementById('start-screen').classList.add('hidden');
   startApp();
